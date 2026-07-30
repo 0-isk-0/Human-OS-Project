@@ -10,3 +10,4 @@ secrets/
 CLAUDE.local.md
 .claude/settings.local.json
 .claude/tmp/
+.local/

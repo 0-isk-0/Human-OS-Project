@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+.env
+.env.local
+.env.production
+.env.development.local
+*.pem
+*.key
+secrets/
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/tmp/

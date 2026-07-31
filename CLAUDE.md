@@ -26,10 +26,20 @@ Human OS Project は、人間の思考・記憶・判断・行動を支援する
 
 開発方針: 完成度よりも試作・改善・検証を高速に繰り返す（詳細は [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)）。
 
+## 上位制約（方針より上位。ここに反する機能・文言は実装しない）
+
+| 制約 | ファイル |
+|---|---|
+| **何を主張してよく、何を主張してはいけないか** | [`docs/design/scientific-constraints.md`](docs/design/scientific-constraints.md) |
+| **因果をどう伝えるか（文言レベルの禁止・推奨）** | [`docs/design/explanation-design.md`](docs/design/explanation-design.md) |
+| **何をどう聞くか** | [`docs/design/input-design.md`](docs/design/input-design.md) |
+
 ## 正本ファイルの地図
 
 | 知りたいこと | 見るファイル |
 |---|---|
+| 現在の方針 | `docs/plans/2026-08-01-direction-v3.md`（承認済み） |
+| 領域定義・シード設問 | `docs/design/domains.md`, `docs/design/seed-questions-v0.md` |
 | 目的・対象・非対象 | `docs/PROJECT_CHARTER.md` |
 | 今どこまで進んでいるか | `docs/PROJECT_STATE.md` |
 | 次に何をするか | `docs/NEXT_ACTIONS.md` |

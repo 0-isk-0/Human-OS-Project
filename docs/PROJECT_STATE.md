@@ -1,6 +1,6 @@
 # PROJECT_STATE.md
 
-最終更新: 2026-07-31（JST）
+最終更新: 2026-08-04（JST）
 
 ## 現在の要約
 
@@ -30,6 +30,8 @@
 - 追加調査12本（発達環境と人格形成／適応型アセスメント／因果説明の提示／ナラティブと回顧バイアス／行動遺伝学の制約／不確実性の伝達／ケースフォーミュレーション／XAIとスクルータブルモデル ほか）
 - **方針v3の承認（D013）**、7領域の確定とシード20問の作成（D014）
 - 上位制約文書3本の整備: `scientific-constraints.md`（何を主張してよいか）、`explanation-design.md`（どう伝えるか）、`input-design.md`（何をどう聞くか）
+- **助成プログラムの技術的支援を発見・活用**: Grisha Szep氏のリポジトリ `gszep/claude-cloudflare-worker`（Private、`0-isk-0`でアクセス確認済み）が、**APIキーなしでClaude Codeの認証情報を使ってWebアプリからClaudeを呼べる実験的な仕組み**を提供している。Cloudflare Worker＋D1、学生の自分のClaudeサブスク＋Cloudflareアカウントで動く。README に明記された重要な注意: 「本番用基盤ではない」「機微な参加者データを収集する前に倫理審査の承認か正式な免除を得ること」「API限定アクセスが必要ならAPIキーを使うこと」
+- GitHub上で `SouNobukawa`（信川教授）・`gszep`（Grisha氏）をこのリポジトリのCollaboratorとして招待済み（Pending Invite、2026-08-04）。**個人所有（非Organization）リポジトリのため、GitHubの共同作業者には権限選択肢がなく、Write権限で招待される**（Read限定は不可。Publicリポジトリなので実害は小さいと判断し進めた）
 
 ## 作業中
 
@@ -37,9 +39,10 @@
 
 ## 停止・待機
 
-- 方針v2への承認・修正待ち（`docs/plans/2026-08-01-direction-v2-divination.md`）
-- 大学関係者からの返信待ち（GitHubユーザー名確認 → Collaborator招待、APIキー手続きの案内）
+- `SouNobukawa`・`gszep` のCollaborator招待への応答待ち（Pending Invite、2026-08-04送付）
+- **倫理審査の確認が未着手**: `gszep/claude-cloudflare-worker` のREADMEが「機微な参加者データを収集する前に倫理審査の承認か正式な免除を得ること」と明記している。Human OS Project の Phase 1（友人へのミニテスト）はこれに該当する可能性が高い。**Phase 1に進む前に、Grisha氏または大学に倫理審査の要否を確認する必要がある**（まだ質問文を送っていない）
 - 助成プログラムからの進捗報告方法の通知待ち（`docs/ROADMAP.md` 参照）
+- 方針v2（占い方向）は却下済み（D010）、対応不要
 
 ## 既知の問題
 
@@ -59,6 +62,12 @@
 ## 次回セッションが必ず知るべき情報
 
 - このプロジェクトは開発者の他の個人プロジェクトと完全に分離されている。GitHubアカウント・SSH鍵・git identityも別。リポジトリは公開前提で書く（他プロジェクトの固有名を書かない）。
-- プロダクトの方向性は確定済み: 対話で更新され続ける・本人所有の人格モデル（D004）、段階的に自己理解→思考支援OS（D008）。
-- 原点レポートと本人の個人データ（セッションログ・モデル実データ）は `.local/`（Git管理外）に置く。**公開リポジトリに個人情報・他案件の固有名を書かない。**
-- 次の一歩は Phase 0 第1回セッション（原点レポートの暫定モデル検証）。手順は `docs/design/interview-algorithm-v0.md`。
+- **`interview-algorithm-v0.md`・`personality-model-v0.md`は初期の対話型設計であり、現在は方針v3（選択式が土台）に置き換わっている。正本は `docs/plans/2026-08-01-direction-v3.md` と `docs/design/domains.md`・`seed-questions-v0.md`。**
+- **次にやること（優先順）**:
+  1. `docs/design/seed-questions-v0.md` の20問に、いしこ自身が答えてみる（Phase 0）
+  2. その回答から、`explanation-design.md` の規律（原因を語るときは必ず可変性もセットで語る／単一因果を出さない／`[理想] or [影]`構文 等）に従って出力を1本手で書く
+  3. 出力が `explanation-design.md` §8 の禁止リストを全行通過しているか確認し、バーナムテスト（別の人に見せて「自分にも当てはまる」と言われないか）を行う
+  4. **並行して**: Phase 1（友人へのミニテスト）に進む前に、倫理審査の要否をGrisha氏らに確認する（上記「停止・待機」参照）
+- 上位制約は3文書: `scientific-constraints.md`（何を主張してよいか）／`explanation-design.md`（どう伝えるか）／`input-design.md`（何をどう聞くか）。方針や実装がこれらと矛盾する場合は制約文書が優先。
+- 個人データ（セッションログ・モデル実データ・原点レポート・氏名や学籍番号を含む下書き）は `.local/`（Git管理外）に置く。**公開リポジトリに個人情報・他案件の固有名を書かない**（過去に一度、他プロジェクトの固有名を含めてしまい、履歴を作り直した経緯がある。D006参照）。
+- 技術基盤の選択肢が1つ増えた: `gszep/claude-cloudflare-worker`（APIキー不要でClaudeをWebアプリから呼べる実験的Worker）。詳細は上記「完了」欄と`docs/ROADMAP.md`のPhase 2。

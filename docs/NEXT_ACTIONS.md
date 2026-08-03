@@ -17,10 +17,17 @@
 3. **プロダクト名を決める**
    - 制約: 「MBTI」「診断」「AI占い」を入れない（商標・差別化の両面で不利）
 
+4. **Phase 1（友人へのミニテスト）に進む前に、倫理審査の要否を確認する**
+   - 背景: `gszep/claude-cloudflare-worker`（下記参照）のREADMEが「機微な参加者データを収集する前に倫理審査の承認か正式な免除を得ること」と明記している。生育環境・調子・人間関係を聞くHuman OSは対象になりうる
+   - 完了条件: Grisha氏または大学から、免除で進められるか／審査が必要かの回答を得る
+   - リスク: 確認せずに友人テストを始めると、後から成果として使えなくなる可能性がある
+
 ## Next
 
+- **`gszep/claude-cloudflare-worker` の導入検討**（2026-08-04発見）: APIキーなしでClaude Codeの認証情報を使い、Webアプリ（Cloudflare Worker）からClaudeを呼べる実験的な仕組み。Phase 2のAPIキー待ちを解消できる可能性がある。ただしREADMEに「本番用ではない」「最新のClaude Codeにしか対応しない」と明記されており、実装前に一読が必要
+- GitHub Collaborator招待（`SouNobukawa`・`gszep`、2026-08-04送付・Pending）への応答確認
 - プロダクト名を決める（Human OSはプロジェクト名。プロダクト名を別に付けるか含めて）
-- Claude APIキーの入手経路を決める（大学へ申請 or 自費。Phase 2着手前に必要）
+- Claude APIキーの入手経路を決める（大学へ申請 or 自費 or 上記Workerで代替。Phase 2着手前に必要）
 - 助成プログラムの進捗報告フォーマット・頻度が通知されたら `docs/ROADMAP.md` を更新する
 
 ## Later

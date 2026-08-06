@@ -17,17 +17,19 @@
 3. **プロダクト名を決める**
    - 制約: 「MBTI」「診断」「AI占い」を入れない（商標・差別化の両面で不利）
 
-4. **Phase 1（友人へのミニテスト）に進む前に、倫理審査の要否を確認する**
-   - 背景: `gszep/claude-cloudflare-worker`（下記参照）のREADMEが「機微な参加者データを収集する前に倫理審査の承認か正式な免除を得ること」と明記している。生育環境・調子・人間関係を聞くHuman OSは対象になりうる
-   - 完了条件: Grisha氏または大学から、免除で進められるか／審査が必要かの回答を得る
-   - リスク: 確認せずに友人テストを始めると、後から成果として使えなくなる可能性がある
+4. ~~Phase 1に進む前に倫理審査の要否を確認する~~ → **解決済み（2026-08-06、D017）**: Grisha氏の回答により、Phase 1（開発者自身のデータのみ）は審査不要と確定。Phase 2以降で他者のデータを収集する場合のみ審査/適用除外の確認が必須。
+
+5. **`gszep/claude-cloudflare-worker` の導入作業（Phase 2向け、着手可）**
+   - 背景: D018でAPIキー正式申請は不要と確定。Grisha氏の案内により、開発者自身のClaude EnterpriseシートのOAuthをwrangler経由で使う
+   - 手順: リポジトリのREADME/plan.mdに従い、①Cloudflareアカウントでの`wrangler login`、②`ANTHROPIC_OAUTH_TOKEN`（自分のClaude Codeの認証情報）と`APP_ACCESS_TOKEN`のsecret設定、③`npm run test:live`でライブ動作確認、④`npm run setup:apply`でデプロイ
+   - 注意: secretの値は絶対にコード・Markdown・コミットに書かない。ログイン・トークン発行は本人が行う必要がある操作を含む
+   - 完了条件: Workerがデプロイされ、`/health`と`/api/chat`が動作確認できる
+   - タイミング: Phase 0/1（コード不要）と並行して進めてよいが、実際に使うのはPhase 2から
 
 ## Next
 
-- **`gszep/claude-cloudflare-worker` の導入検討**（2026-08-04発見）: APIキーなしでClaude Codeの認証情報を使い、Webアプリ（Cloudflare Worker）からClaudeを呼べる実験的な仕組み。Phase 2のAPIキー待ちを解消できる可能性がある。ただしREADMEに「本番用ではない」「最新のClaude Codeにしか対応しない」と明記されており、実装前に一読が必要
 - GitHub Collaborator招待（`SouNobukawa`・`gszep`、2026-08-04送付・Pending）への応答確認
 - プロダクト名を決める（Human OSはプロジェクト名。プロダクト名を別に付けるか含めて）
-- Claude APIキーの入手経路を決める（大学へ申請 or 自費 or 上記Workerで代替。Phase 2着手前に必要）
 - 助成プログラムの進捗報告フォーマット・頻度が通知されたら `docs/ROADMAP.md` を更新する
 
 ## Later

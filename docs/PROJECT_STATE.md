@@ -1,6 +1,6 @@
 # PROJECT_STATE.md
 
-最終更新: 2026-08-06（JST）
+最終更新: 2026-10-21（JST）
 
 ## 現在の要約
 
@@ -34,6 +34,8 @@
 - GitHub上で `SouNobukawa`（信川教授）・`gszep`（Grisha氏）をこのリポジトリのCollaboratorとして招待済み（Pending Invite、2026-08-04）。**個人所有（非Organization）リポジトリのため、GitHubの共同作業者には権限選択肢がなく、Write権限で招待される**（Read限定は不可。Publicリポジトリなので実害は小さいと判断し進めた）
 - **Grisha氏からメール回答（2026-08-03受信）を得た（D017・D018）**: (1) Phase 1（コード不要・開発者自身のデータのみ）の進め方に問題なしと承認。(2) **倫理審査は、Phase 1では不要。Phase 2以降で開発者以外からデータを収集する場合のみ、収集開始前に倫理審査の承認か正式な適用除外の確認が必須**（保留事項が解消）。(3) **Phase 2のAPIアクセスは`gszep/claude-cloudflare-worker`を使う方針で確定**——大学への正式なAPIキー申請は不要、開発者自身のClaude EnterpriseシートのOAuthをwrangler経由で使う。共有トークンは使わない。
 
+- **2026-10-21: Windows のサブPCで作業環境をセットアップ**（Git導入、HTTPSでclone、identityはリポジトリ限定）。ドキュメント整合性の修正: ROADMAPを方針v3のフェーズ計画に揃えた、Phase 1と倫理審査（D017）の食い違いを `[要確認]` として明記、READMEを拡充、DECISIONSを番号順に整理
+
 ## 作業中
 
 なし。
@@ -52,9 +54,10 @@
 
 ## 現在の環境・branch・deployment
 
-- ローカルパス: `~/アプリケーション/human-os-project`
+- ローカルパス: メインPC `~/アプリケーション/human-os-project`／サブPC（Windows）`Documents\Human-OS-Project`
 - branch: `main`（`origin/main` を追跡）
-- リモート: `git@github-isk:0-isk-0/Human-OS-Project.git`
+- リモート: メインPC `git@github-isk:0-isk-0/Human-OS-Project.git`（SSH）／サブPC `https://github.com/0-isk-0/Human-OS-Project.git`（HTTPS）
+- 詳細・セットアップ手順: `docs/OPERATIONS.md`「環境」
 - デプロイ先: なし（未着手）
 
 ## test/lint/typecheck/build/手動確認の結果

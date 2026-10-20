@@ -43,6 +43,7 @@ human-os-project/
 
 - Claude Enterprise（大学「AI活用推進助成プログラム」経由）
 - GitHub（`0-isk-0/Human-OS-Project`）
+- Cloudflare Worker ＋ D1（`gszep/claude-cloudflare-worker`、Phase 2から使用予定、D018）: Webアプリから開発者自身のClaude EnterpriseシートのOAuthでClaudeを呼ぶための中継。本リポジトリには取り込まず、別インスタンスとしてデプロイしてURLを呼ぶ構成。導入手順は `docs/OPERATIONS.md`
 
 ## 絶対に壊せない仕様
 

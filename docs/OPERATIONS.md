@@ -6,9 +6,28 @@
 
 ## 環境
 
+作業用PCは2台。どちらもgit identityは**リポジトリ限定（`--local`）**で設定し、グローバル設定には入れない（他リポジトリに影響させない）。
+
+- git identity: `user.name=0-isk-0`, `user.email=206745864+0-isk-0@users.noreply.github.com`（GitHubのnoreplyアドレスを使用し、個人メールを公開履歴に残さない）
+
+### メインPC（macOS）
+
 - ローカルパス: `~/アプリケーション/human-os-project`
 - Git remote: `git@github-isk:0-isk-0/Human-OS-Project.git`（SSH host alias、`~/.ssh/config` の `github-isk` を使用）
-- このリポジトリのgit identity: `user.name=0-isk-0`, `user.email=206745864+0-isk-0@users.noreply.github.com`（`--local`設定、他リポジトリに影響しない。GitHubのnoreplyアドレスを使用し、個人メールを公開履歴に残さない）
+
+### サブPC（Windows、2026-10-21セットアップ）
+
+- Git for Windows を winget で導入（`winget install --id Git.Git -e`）
+- ローカルパス: `Documents\Human-OS-Project`（OneDrive同期下。同期とgitの競合が起きたら同期対象外の場所へ移す）
+- Git remote: `https://github.com/0-isk-0/Human-OS-Project.git`（HTTPS。専用SSH鍵はこのPCに置いていない）
+- 認証: 初回push時にGit Credential Managerがブラウザ認証を求める。**必ず `0-isk-0` でサインインする**（他アカウントの資格情報を混在させない）
+- 新しいPCで同じ状態を作る手順:
+  ```sh
+  git clone https://github.com/0-isk-0/Human-OS-Project.git
+  cd Human-OS-Project
+  git config user.name "0-isk-0"
+  git config user.email "206745864+0-isk-0@users.noreply.github.com"
+  ```
 
 ## 検証コマンド
 

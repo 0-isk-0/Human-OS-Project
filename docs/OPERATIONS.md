@@ -18,7 +18,7 @@
 ### サブPC（Windows、2026-10-21セットアップ）
 
 - Git for Windows を winget で導入（`winget install --id Git.Git -e`）
-- ローカルパス: `Documents\Human-OS-Project`（OneDrive同期下。同期とgitの競合が起きたら同期対象外の場所へ移す）
+- ローカルパス: `C:\Users\user\dev\Human-OS-Project`（OneDrive同期の対象外。当初は `Documents`（OneDrive同期下）に置いたが、同期で重くなるため2026-10-21に移した）
 - Git remote: `https://github.com/0-isk-0/Human-OS-Project.git`（HTTPS。専用SSH鍵はこのPCに置いていない）
 - 認証: 初回push時にGit Credential Managerがブラウザ認証を求める。**必ず `0-isk-0` でサインインする**（他アカウントの資格情報を混在させない）
 - 新しいPCで同じ状態を作る手順:

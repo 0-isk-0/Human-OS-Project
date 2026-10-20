@@ -54,7 +54,7 @@
 
 ## 現在の環境・branch・deployment
 
-- ローカルパス: メインPC `~/アプリケーション/human-os-project`／サブPC（Windows）`Documents\Human-OS-Project`
+- ローカルパス: メインPC `~/アプリケーション/human-os-project`／サブPC（Windows）`C:\Users\user\dev\Human-OS-Project`
 - branch: `main`（`origin/main` を追跡）
 - リモート: メインPC `git@github-isk:0-isk-0/Human-OS-Project.git`（SSH）／サブPC `https://github.com/0-isk-0/Human-OS-Project.git`（HTTPS）
 - 詳細・セットアップ手順: `docs/OPERATIONS.md`「環境」

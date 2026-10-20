@@ -34,7 +34,6 @@
 ## Next
 
 - GitHub Collaborator招待（`SouNobukawa`・`gszep`、2026-08-04送付・Pending）への応答確認
-- サブPC（Windows）から初回pushする際、Git Credential Managerのブラウザ認証で `0-isk-0` としてサインインする（`docs/OPERATIONS.md`「環境」）
 - 助成プログラムの進捗報告フォーマット・頻度が通知されたら `docs/ROADMAP.md` を更新する
 
 ## Later

@@ -31,6 +31,12 @@
    - 完了条件: Workerがデプロイされ、`/health`と`/api/chat`が動作確認できる
    - タイミング: Phase 0/1（コード不要）と並行して進めてよいが、実際に使うのはPhase 2から
 
+6. **方針v4（仮説モード）の承認可否を判断する**
+   - 対象: `docs/plans/2026-10-22-direction-v4-hypothesis-mode.md`（提案中・未承認）
+   - 判断すべき点: §7「未解決の論点」4件（軽・中・重の具体的境界／安全境界の線引き／Phase 0でのシミュレーション方法／傾向記述の文言）
+   - 承認した場合: `DECISIONS.md` にD019として記録し、`explanation-design.md` に傾向記述の文言規則を追記する
+   - **Phase 0（上記1〜3）はv4の承認を待たずに進めてよい**。v4は Phase 0 の後に試す機能
+
 ## Next
 
 - GitHub Collaborator招待（`SouNobukawa`・`gszep`、2026-08-04送付・Pending）への応答確認

@@ -3,6 +3,7 @@
   var D = window.DEMO;
   var KEY = "hos-demo-v1";
   var DEPTH = 8; // 「ふつうの深さ」の問数（docs/design/domains.md）
+  function HD(id) { return D.hyps[id] || D.newHyps[id]; }
   var app = document.getElementById("app");
   var nav = document.getElementById("nav");
 
@@ -21,7 +22,7 @@
       var h = D.hyps[id];
       hyps[id] = { status: "unconfirmed", a: h.a, by: "sample", conditions: "", reason: "", evidence: h.evidence.slice(), counter: [], conf: h.conf, confWhy: h.confWhy };
     });
-    return { view: "welcome", arg: null, visitorQ0: "", hyps: hyps, extra: [], history: [], deep: {}, pending: null, flash: null };
+    return { view: "welcome", arg: null, visitorQ0: "", hyps: hyps, order: D.hypOrder.slice(), seedPick: D.seedDemo.map(function (x) { return x.d.slice(); }), extra: [], history: [], deep: {}, care: {}, pending: null, flash: null };
   }
 
   var S;
@@ -35,8 +36,8 @@
   function fact(id) { return allFacts().filter(function (f) { return f.id === id; })[0]; }
   function factsOf(domainId) { return allFacts().filter(function (f) { return f.domain === domainId; }); }
   function answered(domainId) { return factsOf(domainId).filter(function (f) { return f.a !== null; }).length; }
-  function hypsOf(domainId) { return D.hypOrder.filter(function (id) { return D.hyps[id].domain === domainId; }); }
-  function countStatus(st) { return D.hypOrder.filter(function (id) { return S.hyps[id].status === st; }).length; }
+  function hypsOf(domainId) { return S.order.filter(function (id) { return HD(id).domain === domainId; }); }
+  function countStatus(st) { return S.order.filter(function (id) { return S.hyps[id].status === st; }).length; }
   function deepDone(id) { return !!(S.deep[id] && S.deep[id].done); }
   function time(t) { var d = new Date(t); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
   function log(title, lines, diff) { S.history.push({ t: Date.now(), title: title, lines: lines || [], diff: diff || null }); }
@@ -56,7 +57,7 @@
   function statusTag(st) { return '<span class="tag st st-' + st + '"><span aria-hidden="true">' + STATUS[st].mark + "</span> " + STATUS[st].label + "</span>"; }
 
   function hypCard(id, inReview) {
-    var h = D.hyps[id], s = S.hyps[id], rejected = s.status === "rejected";
+    var h = HD(id), s = S.hyps[id], rejected = s.status === "rejected";
     var out = '<article class="hyp st-' + s.status + '" id="card-' + id + '">';
     out += '<div class="hyp-head"><span class="tag tag-hyp">サンプル仮説</span>' + statusTag(s.status) + '<span class="hyp-dom">' + dom(h.domain).name + "</span></div>";
     out += "<h3>" + h.title + "</h3>";
@@ -87,7 +88,7 @@
   }
 
   function actions(id, inReview) {
-    var h = D.hyps[id], s = S.hyps[id], p = S.pending && S.pending.id === id ? S.pending.mode : null;
+    var h = HD(id), s = S.hyps[id], p = S.pending && S.pending.id === id ? S.pending.mode : null;
     if (p) {
       var cfg = {
         partial: { q: "どんなときは違いますか？", chips: h.partialChips, ok: "保存する", ph: "例：親しい相手のときは当てはまらない" },
@@ -115,7 +116,7 @@
       '</div><p class="verdict-foot">違うと思ったら教えてください。書き換えます。</p></div>';
   }
 
-  function nextUnjudged() { return D.hypOrder.filter(function (id) { return S.hyps[id].status === "unconfirmed"; })[0] || null; }
+  function nextUnjudged() { return S.order.filter(function (id) { return S.hyps[id].status === "unconfirmed"; })[0] || null; }
 
   function back(view, arg, label) { return '<button class="back" data-go="' + view + '"' + (arg ? ' data-arg="' + arg + '"' : "") + ">← " + label + "</button>"; }
 
@@ -136,16 +137,15 @@
   };
 
   V.seed = function () {
-    function opts(list, picked) { return '<div class="opts">' + list.map(function (o) { return '<span class="opt' + (picked.indexOf(o) >= 0 ? " on" : "") + '">' + o + "</span>"; }).join("") + "</div>"; }
-    return '<p class="eyebrow">入口 ／ 20問・約3分</p><h2>選択肢で答える</h2>' +
-      '<p class="sub">本来はここで20問に答えます。このデモでは、' + D.persona + "の回答がすでに入っています。3問だけ例を表示します。</p>" +
-      '<section class="card"><p class="seed-n">Q3 ・ 今の暮らし</p><p class="seed-q">いまの生活で、「これは自分で決められる」と感じることはどれくらいありますか？</p>' +
-      opts(["ほとんどない", "少しある", "半分くらい", "かなりある", "ほとんど自分で決めている"], ["少しある"]) + "</section>" +
-      '<section class="card"><p class="seed-n">Q5 ・ 調子の波（複数選択）</p><p class="seed-q">「これがあると消耗する」と感じるのは？</p>' +
-      opts(["人と長く一緒にいること", "予定が急に変わること", "予定が詰まっていること", "やることが決まっていないこと", "誰かに評価される場面", "睡眠が足りないこと"], ["予定が急に変わること", "予定が詰まっていること", "誰かに評価される場面"]) + "</section>" +
-      '<section class="card"><p class="seed-n">Q18 ・ 育った環境</p><p class="seed-q">育つ過程で、経済的な不安を感じることがありましたか？</p>' +
-      opts(["はい", "いいえ", "答えない"], ["答えない"]) + '<p class="fine">答えたくない質問は、飛ばせます。</p></section>' +
-      '<button class="btn primary wide" data-go="home">地図を見る</button>';
+    var o = '<p class="eyebrow">入口 ／ 20問・約3分</p><h2>選択肢で答える</h2>' +
+      '<p class="sub">本来はここで20問に答えます。このデモでは3問だけ、実際に選べる形で並べています（' + D.persona + "の回答があらかじめ入っています）。</p>";
+    D.seedDemo.forEach(function (q, i) {
+      o += '<section class="card"><p class="seed-n">' + q.n + '</p><p class="seed-q">' + q.q + '</p><div class="opts">' +
+        q.o.map(function (x) { return '<button class="opt' + (S.seedPick[i].indexOf(x) >= 0 ? " on" : "") + '" data-seed="' + i + '" data-opt="' + esc(x) + '">' + x + "</button>"; }).join("") +
+        "</div>" + (q.note ? '<p class="fine">' + q.note + "</p>" : "") + "</section>";
+    });
+    o += '<p class="fine">ここで選んだ内容は、このデモでは使いません。このあとは' + D.persona + "の回答で進みます。</p>";
+    return o + '<button class="btn primary wide" data-go="home">地図を見る</button>';
   };
 
   V.home = function () {
@@ -199,7 +199,7 @@
   V.manual = function () {
     function list(sts) { return D.hypOrder.filter(function (id) { return sts.indexOf(S.hyps[id].status) >= 0; }); }
     function mini(id) {
-      var h = D.hyps[id], s = S.hyps[id];
+      var h = HD(id), s = S.hyps[id];
       return '<li><button class="mini" data-go="domain" data-arg="' + h.domain + '"><span class="mini-top">' + statusTag(s.status) + '<span class="hyp-dom">' + dom(h.domain).name + "</span></span>" +
         '<span class="mini-a' + (s.status === "rejected" ? " struck" : "") + '">' + esc(s.a) + "</span>" +
         (s.conditions ? '<span class="mini-c">当てはまらないとき：' + esc(s.conditions) + "</span>" : "") + "</button></li>";
@@ -239,10 +239,9 @@
     var o = back("home", null, "地図に戻る") + '<h2>気になる領域を深掘りする</h2><p class="sub">掘る場所は本人が選びます。質問はこのデモ用のサンプルです。</p><ul class="picks">';
     D.domains.forEach(function (d) {
       var set = D.deep[d.id], n = Math.min(answered(d.id), DEPTH);
-      var note = set ? (deepDone(d.id) ? "回答済み ／ 結果を見る" : set.questions.length + "問 ・ 約" + set.minutes + "分")
-        : d.id === "roots" ? "この領域は、本人が選んだときだけ、相談先の案内と一緒に出します。デモには含めていません。" : "このデモには含めていません。";
-      o += "<li>" + (set ? '<button class="pick" data-go="deepQ" data-arg="' + d.id + '">' : '<div class="pick off">') +
-        '<span class="domain-top"><span class="domain-name">' + d.name + '</span><span class="domain-fig">' + n + " / " + DEPTH + '</span></span><span class="pick-note">' + note + "</span>" + (set ? "</button>" : "</div>") + "</li>";
+      var note = deepDone(d.id) ? "回答済み ／ 結果を見る" : set.questions.length + "問 ・ 約" + set.minutes + "分" + (set.care ? "（進む前に確認があります）" : "");
+      o += '<li><button class="pick" data-go="deepQ" data-arg="' + d.id + '">' +
+        '<span class="domain-top"><span class="domain-name">' + d.name + '</span><span class="domain-fig">' + n + " / " + DEPTH + '</span></span><span class="pick-note">' + note + "</span></button></li>";
     });
     return o + "</ul>";
   };
@@ -250,21 +249,27 @@
   V.deepQ = function (id) {
     var set = D.deep[id];
     if (deepDone(id)) return V.deepResult(id);
+    if (set.care && !S.care[id]) {
+      return back("deepPick", null, "領域を選び直す") + '<p class="eyebrow">' + dom(id).name + "</p><h2>" + set.care_title + "</h2>" +
+        '<ul class="about">' + set.care_lines.map(function (l) { return "<li>" + l + "</li>"; }).join("") + "</ul>" +
+        '<button class="btn primary wide" data-care="' + id + '">続ける（' + set.questions.length + "問）</button>" +
+        '<button class="btn ghost wide" data-go="deepPick">やめておく</button>';
+    }
     var i = S.deepStep || 0, q = set.questions[i];
     return back("deepPick", null, "領域を選び直す") + '<p class="eyebrow">' + dom(id).name + " ／ " + (i + 1) + " / " + set.questions.length + "</p>" +
       '<div class="steps">' + set.questions.map(function (x, k) { return '<span class="' + (k === i ? "now" : k < i ? "done" : "") + '"></span>'; }).join("") + "</div>" +
       '<section class="card"><p class="seed-n">サンプル質問</p><p class="seed-q">' + q.q + '</p><div class="answers">' +
-      q.options.map(function (o) { return '<button class="answer" data-ans="' + o + '">' + o + "</button>"; }).join("") +
+      q.options.map(function (o) { return '<button class="answer" data-ans="' + esc(o.t) + '">' + o.t + "</button>"; }).join("") +
       '<button class="answer skip" data-ans="">答えない</button></div></section>';
   };
 
   V.deepResult = function (id) {
-    var st = S.deep[id], set = D.deep[id];
+    var st = S.deep[id];
     var o = '<p class="eyebrow">' + dom(id).name + " ／ 深掘りの結果</p><h2>地図に書き足しました</h2>";
     o += '<h3 class="h-sub"><span class="tag tag-fact">加わった回答（' + st.added.filter(function (f) { return fact(f).a !== null; }).length + '件）</span></h3><ul class="facts card">' + st.added.map(function (f) { return factRow(fact(f)); }).join("") + "</ul>";
     o += '<h3 class="h-sub"><span class="tag tag-hyp">仮説の変化</span></h3><div class="changed"><ul>' + st.lines.map(function (l) { return "<li>" + l + "</li>"; }).join("") + "</ul></div>";
     o += '<p class="fine">この変化は、回答ごとにあらかじめ用意した分岐による例です。実際の分析は行っていません。</p>';
-    o += hypCard(set.target, false);
+    o += st.target ? hypCard(st.target, false) : "";
     o += '<button class="btn primary wide" data-go="home">地図に戻る</button><button class="btn ghost wide" data-go="history">変更履歴を見る</button>';
     return o;
   };
@@ -280,7 +285,7 @@
 
   // ---------- 操作 ----------
   function verdict(id, v, text) {
-    var h = D.hyps[id], s = S.hyps[id], lines = [], diff = null;
+    var h = HD(id), s = S.hyps[id], lines = [], diff = null;
     text = (text || "").trim();
     var from = STATUS[s.status].label;
     if (v === "partial") {
@@ -306,34 +311,48 @@
   }
 
   function finishDeep(id) {
-    var set = D.deep[id], st = S.deep[id], s = S.hyps[set.target], h = D.hyps[set.target], lines = [];
+    var set = D.deep[id], st = S.deep[id], lines = [], forA = [], forB = [];
     st.added = [];
     set.questions.forEach(function (q) {
       var a = st.ans[q.id];
       S.extra.push({ id: q.id, domain: id, q: q.q.replace(/？$/, ""), a: a || null });
       st.added.push(q.id);
+      var picked = q.options.filter(function (o) { return o.t === a; })[0];
+      if (picked && picked.e === "A") forA.push(q.id);
+      if (picked && picked.e === "B") forB.push(q.id);
     });
     var n = st.added.filter(function (f) { return fact(f).a !== null; }).length;
     log("深掘りに回答（" + dom(id).name + "）", [n + " 件の回答が加わりました。"]);
-    if (s.status === "rejected") {
+    st.target = set.target || null;
+
+    if (set.creates && !S.hyps[set.creates]) {
+      var nh = D.newHyps[set.creates];
+      S.hyps[set.creates] = { status: "unconfirmed", a: nh.a, by: "sample", conditions: "", reason: "",
+        evidence: nh.evidence.concat(forA), counter: forB, conf: nh.conf, confWhy: nh.confWhy };
+      S.order.push(set.creates);
+      st.target = set.creates;
+      lines.push("この領域にはまだ仮説がありませんでしたが、<b>新しいサンプル仮説が1件立ちました</b>。");
+      if (forB.length) lines.push("別の見方を支える回答も " + forB.length + " 件あり、隠さずに並べて表示します。");
+      log("新しい仮説を追加 ／ " + nh.title, lines.slice());
+      st.lines = lines; st.done = true; return;
+    }
+
+    if (!st.target) {
+      lines.push("回答は記録しましたが、<b>仮説を立てるにはまだ足りません</b>。「まだ分からないこと」に残します。");
+      st.lines = lines; st.done = true; return;
+    }
+
+    var s2 = S.hyps[st.target], h = HD(st.target);
+    if (s2.status === "rejected") {
       lines.push("「" + h.title + "」は「違う」と判定済みのため、書き換えていません。回答は記録しました。");
     } else {
-      var forA = [], forB = [];
-      if (id === "people") {
-        if (/伝えられる/.test(st.ans.D3 || "")) forA.push("D3");
-        if (st.ans.D3 === "変わらない") forB.push("D3");
-        if (/ある/.test(st.ans.D1 || "") && forA.length) forA.push("D1");
-      } else {
-        if (st.ans.E2 === "変わらない") forA.push("E2");
-        if (/軽い/.test(st.ans.E2 || "")) forB.push("E2");
-      }
-      forA.forEach(function (f) { s.evidence.push(f); });
-      forB.forEach(function (f) { s.counter.push(f); });
+      forA.forEach(function (f) { s2.evidence.push(f); });
+      forB.forEach(function (f) { s2.counter.push(f); });
       if (forA.length) lines.push("見方Aの根拠が " + forA.length + " 件増えました（" + forA.join("・") + "）。");
       if (forB.length) lines.push("見方Bを支える回答が " + forB.length + " 件加わりました（" + forB.join("・") + "）。隠さずに並べて表示します。");
-      if (forA.length >= 2 && s.conf === "低") { s.conf = "中"; lines.push("記述の確からしさ：低 → <b>中</b>"); }
+      if (forA.length >= 2 && s2.conf === "低") { s2.conf = "中"; lines.push("記述の確からしさ：低 → <b>中</b>"); }
       if (forA.length || forB.length) {
-        s.confWhy = "根拠の回答は" + s.evidence.length + "件。" + (s.counter.length ? "別の見方を支える回答が" + s.counter.length + "件あります。" : "深掘りの回答が同じ向きでした。");
+        s2.confWhy = "根拠の回答は" + s2.evidence.length + "件。" + (s2.counter.length ? "別の見方を支える回答が" + s2.counter.length + "件あります。" : "深掘りの回答が同じ向きでした。");
         log("仮説を更新 ／ " + h.title, lines.slice());
       } else {
         lines.push("仮説を変える回答はありませんでした。回答は記録しました。");
@@ -366,6 +385,13 @@
       if (S.pending) S.flash = null;
       render(); focusCard(d.id); return;
     }
+    if (d.seed !== undefined) {
+      var sel = S.seedPick[d.seed], q = D.seedDemo[d.seed], at = sel.indexOf(d.opt);
+      if (q.multi) { at >= 0 ? sel.splice(at, 1) : sel.push(d.opt); }
+      else { S.seedPick[d.seed] = at >= 0 ? [] : [d.opt]; }
+      render(); return;
+    }
+    if (d.care) { S.care[d.care] = true; S.deepStep = 0; render(); window.scrollTo(0, 0); return; }
     if (d.fill) { var ta = document.getElementById("txt-" + d.fill); ta.value = d.text; ta.focus(); return; }
     if (d.cancel) { S.pending = null; render(); return; }
     if (d.save) {
@@ -377,7 +403,7 @@
     }
     if (d.redo) {
       var s = S.hyps[d.redo];
-      log("判定をやり直す ／ " + D.hyps[d.redo].title, ["状態：" + STATUS[s.status].label + " → <b>未確認</b>"]);
+      log("判定をやり直す ／ " + HD(d.redo).title, ["状態：" + STATUS[s.status].label + " → <b>未確認</b>"]);
       s.status = "unconfirmed"; S.flash = null; render(); focusCard(d.redo); return;
     }
     if (d.ans !== undefined) {
